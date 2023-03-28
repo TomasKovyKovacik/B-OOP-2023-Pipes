@@ -2,7 +2,7 @@ package sk.stuba.fei.uim.oop.controls;
 
 import lombok.Getter;
 import sk.stuba.fei.uim.oop.board.Board;
-import sk.stuba.fei.uim.oop.board.State;
+import sk.stuba.fei.uim.oop.gui.Game;
 import sk.stuba.fei.uim.oop.tile.Tile;
 
 import javax.swing.*;
@@ -33,17 +33,23 @@ public class GameLogic extends UniversalAdapter {
     }
 
     private void updateInfoLabel() {
-        this.infoLabel.setText("LEVEL: " + levelCounter + ",BOARDSIZE: " + this.currentBoardSize);
+        this.infoLabel.setText("LEVEL: " + levelCounter + ", BOARDSIZE: " + this.currentBoardSize);
         this.mainGame.revalidate();
         this.mainGame.repaint();
     }
 
-    private void gameRestart() {
+    private void gameRestart(boolean reset) {
         this.mainGame.remove(this.currentBoard);
         this.initializeNewBoard(this.currentBoardSize);
         this.mainGame.add(this.currentBoard);
-        this.levelCounter = 1;
+        if (reset) {
+            this.levelCounter = 1;
+        } else {
+            this.levelCounter++;
+        }
         this.updateInfoLabel();
+        this.mainGame.setFocusable(true);
+        this.mainGame.requestFocus();
     }
 
     private void initializeNewBoard(int dimension) {
@@ -55,18 +61,24 @@ public class GameLogic extends UniversalAdapter {
     @Override
     public void stateChanged(ChangeEvent e) {
         this.currentBoardSize = ((JSlider) e.getSource()).getValue();
-        this.gameRestart();
-        this.mainGame.setFocusable(true);
-        this.mainGame.requestFocus();
+        this.gameRestart(true);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        this.gameRestart();
+        if (e.getActionCommand().equals(Game.RESTART)) {
+            this.gameRestart(true);
+        } else {
+            this.checkCorectness();
+        }
         this.mainGame.revalidate();
         this.mainGame.repaint();
-        this.mainGame.setFocusable(true);
-        this.mainGame.requestFocus();
+    }
+
+    private void checkCorectness() {
+        if (this.currentBoard.checkCorectness()) {
+            this.gameRestart(false);
+        }
     }
 
     @Override
@@ -85,7 +97,8 @@ public class GameLogic extends UniversalAdapter {
         if (!(current instanceof Tile)) {
             return;
         }
-        // TODO ROTATE
+        ((Tile) current).rotate();
+        this.currentBoard.repaint();
     }
 
     @Override
@@ -93,12 +106,12 @@ public class GameLogic extends UniversalAdapter {
         System.out.println(e);
         switch (e.getKeyCode()) {
             case KeyEvent.VK_R:
-                this.gameRestart();
+                this.gameRestart(true);
                 break;
             case KeyEvent.VK_ESCAPE:
                 this.mainGame.dispose();
             case KeyEvent.VK_ENTER:
-                // TODO rotate
+                this.checkCorectness();
         }
     }
 }

@@ -13,9 +13,13 @@ public class Board extends JPanel {
     private Random random;
     private Node start;
     private Node end;
+    private List<Node> path;
+    private List<Direction> correctPath;
 
     public Board(int dimension) {
         this.random = new Random();
+        this.path = new ArrayList<>();
+        this.correctPath = new ArrayList<>();
         this.initializeBoard(dimension);
         this.setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));
         this.setBackground(Color.CYAN);
@@ -33,7 +37,9 @@ public class Board extends JPanel {
 
         this.start = new Node(0, this.random.nextInt(dimension - 1));
         this.end = new Node(dimension - 1, this.random.nextInt(dimension - 1));
-        this.createPath(this.generatePath());
+        this.generatePath();
+        this.createPath();
+
         for (int i = 0; i < dimension; i++) {
             for (int j = 0; j < dimension; j++) {
                 this.add(board[i][j]);
@@ -41,56 +47,75 @@ public class Board extends JPanel {
         }
     }
 
-    private void createPath(List<Node> path) {
-        for (int i = path.size() - 1; i >= 0 ; i--) {
-            Node current = path.get(i);
-            Node next = i - 1 < 0 ? null : path.get(i - 1);
-            Node previous = i + 1 > path.size() - 1 ? null : path.get(i + 1);
+    private void createPath() {
+        for (int i = this.path.size() - 1; i >= 0 ; i--) {
+            Node current = this.path.get(i);
+            Node next = i - 1 < 0 ? null : this.path.get(i - 1);
+            Node previous = i + 1 > this.path.size() - 1 ? null : this.path.get(i + 1);
 
             if (next == null && current.equals(this.end)) {
-                Rotation rotation = this.checkRotation(current, previous);
-                this.board[current.getY()][current.getX()] = new StartEnd(rotation);
+                Direction direction = this.checkDirection(current, previous);
+                this.correctPath.add(0, direction);
+                this.board[current.getY()][current.getX()] = new StartEnd(direction, false);
             } else if (previous == null && current.equals(this.start)) {
-                Rotation rotation = this.checkRotation(current, next);
-                this.board[current.getY()][current.getX()] = new StartEnd(rotation);
+                Direction direction = this.checkDirection(current, next);
+                this.correctPath.add(0, direction);
+                this.board[current.getY()][current.getX()] = new StartEnd(direction, true);
             } else {
-                Rotation nextRotation = this.checkRotation(current, next);
-                Rotation prevRotation = this.checkRotation(current, previous);
-                if ((nextRotation.equals(Rotation.UP) && prevRotation.equals(Rotation.DOWN)) ||
-                        (nextRotation.equals(Rotation.DOWN) && prevRotation.equals(Rotation.UP))) {
-                    this.board[current.getY()][current.getX()] = new StraightPipe(Rotation.UP);
-                } else if ((nextRotation.equals(Rotation.LEFT) && prevRotation.equals(Rotation.RIGHT)) ||
-                        (nextRotation.equals(Rotation.RIGHT) && prevRotation.equals(Rotation.LEFT))) {
-                    this.board[current.getY()][current.getX()] = new StraightPipe(Rotation.LEFT);
-                } else {
-                    this.board[current.getY()][current.getX()] = new BentPipe(Rotation.UP);
-                }
-
+                this.checkPipes(current, next, previous);
             }
+            this.board[current.getY()][current.getX()].randomRotate();
         }
     }
 
-    private List<Node> generatePath() {
-        List<Node> path = new ArrayList<>();
+    private void checkPipes(Node current, Node next, Node previous) {
+        Direction nextDirection = this.checkDirection(current, next);
+        Direction prevDirection = this.checkDirection(current, previous);
+        if ((nextDirection.equals(Direction.UP) && prevDirection.equals(Direction.DOWN)) ||
+                (nextDirection.equals(Direction.DOWN) && prevDirection.equals(Direction.UP))) {
+            this.correctPath.add(0, Direction.UP);
+            this.board[current.getY()][current.getX()] = new StraightPipe(Direction.UP);
+        } else if ((nextDirection.equals(Direction.LEFT) && prevDirection.equals(Direction.RIGHT)) ||
+                (nextDirection.equals(Direction.RIGHT) && prevDirection.equals(Direction.LEFT))) {
+            this.correctPath.add(0, Direction.LEFT);
+            this.board[current.getY()][current.getX()] = new StraightPipe(Direction.LEFT);
+        } else if ((nextDirection.equals(Direction.LEFT) && prevDirection.equals(Direction.DOWN)) ||
+                (nextDirection.equals(Direction.DOWN) && prevDirection.equals(Direction.LEFT))) {
+            this.correctPath.add(0, Direction.LEFT);
+            this.board[current.getY()][current.getX()] = new BentPipe(Direction.LEFT);
+        } else if ((nextDirection.equals(Direction.UP) && prevDirection.equals(Direction.LEFT)) ||
+                (nextDirection.equals(Direction.LEFT) && prevDirection.equals(Direction.UP))) {
+            this.correctPath.add(0, Direction.UP);
+            this.board[current.getY()][current.getX()] = new BentPipe(Direction.UP);
+        } else if ((nextDirection.equals(Direction.UP) && prevDirection.equals(Direction.RIGHT)) ||
+                (nextDirection.equals(Direction.RIGHT) && prevDirection.equals(Direction.UP))) {
+            this.correctPath.add(0, Direction.RIGHT);
+            this.board[current.getY()][current.getX()] = new BentPipe(Direction.RIGHT);
+        } else if ((nextDirection.equals(Direction.RIGHT) && prevDirection.equals(Direction.DOWN)) ||
+                (nextDirection.equals(Direction.DOWN) && prevDirection.equals(Direction.RIGHT))) {
+            this.correctPath.add(0, Direction.DOWN);
+            this.board[current.getY()][current.getX()] = new BentPipe(Direction.DOWN);
+        }
+    }
+
+    private void generatePath() {
         List<Node> visitedNodes = new ArrayList<>();
         Node currentPoint = new Node(this.start.getX(), this.start.getY());
 
-        this.randomizedDFS(currentPoint, visitedNodes, path);
-
-        return path;
+        this.randomizedDFS(currentPoint, visitedNodes, this.path);
     }
 
-    private Rotation checkRotation(Node current, Node another) {
+    private Direction checkDirection(Node current, Node another) {
         int checkNextX = current.getX() - another.getX();
         int checkNextY = current.getY() - another.getY();
         if (checkNextX == 0 && checkNextY == 1) {
-            return Rotation.UP;
+            return Direction.UP;
         } else if (checkNextX == 0 && checkNextY == -1){
-            return Rotation.DOWN;
+            return Direction.DOWN;
         } else if (checkNextX == -1 && checkNextY == 0){
-            return Rotation.RIGHT;
+            return Direction.RIGHT;
         } else {
-            return Rotation.LEFT;
+            return Direction.LEFT;
         }
     }
 
@@ -144,4 +169,29 @@ public class Board extends JPanel {
         }
         node.setNeighbours(neighbours);
     }
+
+    public boolean checkCorectness() {
+        for (int i = this.path.size() - 1; i >= 0 ; i--) {
+            Node current = this.path.get(i);
+            Direction correct = this.correctPath.get(i);
+            Tile tile = this.board[current.getY()][current.getX()];
+            if (tile instanceof StraightPipe) {
+                if ((correct.equals(Direction.LEFT) || correct.equals(Direction.RIGHT)) && (tile.getDirection().equals(Direction.LEFT) || tile.getDirection().equals(Direction.RIGHT))) {
+                    tile.setWater(true);
+                } else if ((correct.equals(Direction.UP) || correct.equals(Direction.DOWN)) && (tile.getDirection().equals(Direction.UP) || tile.getDirection().equals(Direction.DOWN))) {
+                    tile.setWater(true);
+                } else {
+                    return false;
+                }
+            } else {
+                if (correct.equals(tile.getDirection())) {
+                    tile.setWater(true);
+                } else {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
 }
