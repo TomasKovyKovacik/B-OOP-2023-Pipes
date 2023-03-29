@@ -12,6 +12,7 @@ Po spustení aplikácie vygenerujte pomocou algoritmu [náhodného prehľadávan
 Hra bude začínať na hracej ploche veľkosti 8x8 polí, a bude možné jej veľkosť meniť (minimálne 3 velkosti).
 
 Cieľom hry je prepojiť štart a ciel pomocou správneho otočenia trubiek. Ak sa nám podarí cestu správne otočiť, po jej skontrolovaní chceme prejst do ďalšieho levelu (nanovo vygenerovať hraciu plochu).
+Štart a cieľ hry sa náhodne generuje, vždy na protiľahlej strane hernej plochy (Ak je štart vľavo, cieľ musí byť vpravo, pozíciu treba vybrat náhodne). Trubky po vygenerovaní ccesty musia byť náhodne otočené.
 
 ## Požiadavky
 
