@@ -9,10 +9,10 @@ Vašou úlohou je naprogramovať hru ako oknovú aplikáciu v jazyku Java s pomo
 * bočné menu (jeho umiestnenie si zvoľte sami, teda môže byť aj hore, alebo dole)
 ## Základná pozícia
 Po spustení aplikácie vygenerujte pomocou algoritmu [náhodného prehľadávania do hĺbky](https://www.baeldung.com/cs/maze-generation#dfs-maze) cestu z trubiek, ktoré pôjdu od štartu po cieľ a vykreslite ju na canvas.
-Hra bude začínať na hracej ploche veľkosti 8x8 polí, a bude možné jej veľkosť meniť (minimálne 3 velkosti).
+Hra bude začínať na hracej ploche veľkosti 8x8 polí, a bude možné jej veľkosť meniť (minimálne 3 veľkosti).
 
-Cieľom hry je prepojiť štart a ciel pomocou správneho otočenia trubiek. Ak sa nám podarí cestu správne otočiť, po jej skontrolovaní chceme prejst do ďalšieho levelu (nanovo vygenerovať hraciu plochu).
-Štart a cieľ hry sa náhodne generuje, vždy na protiľahlej strane hernej plochy (Ak je štart vľavo, cieľ musí byť vpravo, pozíciu treba vybrat náhodne). Trubky po vygenerovaní ccesty musia byť náhodne otočené.
+Cieľom hry je prepojiť štart a cieľ pomocou správneho otočenia trubiek. Ak sa nám podarí cestu správne otočiť, po jej skontrolovaní chceme prejsť do ďalšieho levelu (nanovo vygenerovať hraciu plochu).
+Štart a cieľ hry sa náhodne generuje, vždy na protiľahlej strane hernej plochy (Ak je štart vľavo, cieľ musí byť vpravo, pozíciu treba vybrat náhodne). Trubky po vygenerovaní cesty musia byť náhodne otočené.
 
 ## Požiadavky
 
@@ -85,6 +85,7 @@ After starting the application, generate a path from the pipes that will go from
 The game will start on a playing board of 8x8 squares, and it will be possible to change its size (minimum 3 sizes).
 
 The goal of the game is to connect the start and the finish line by turning the pipes correctly. If we manage to turn the path correctly, after checking it we want to go to the next level (generate a new the playing board).
+The positions of the start and the finish line are generated randomly, always at the opposite sides of the board (if the start is on the left, the finish must be on the right, the positions must be chosen randomly). After the path is generated the pipes must be rotated randomly.    
 
 ## Requirements
 
