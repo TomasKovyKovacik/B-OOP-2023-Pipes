@@ -62,7 +62,7 @@ Niektoré z vecí, za ktoré sme minulý rok strhli po 0,5 - 1 bode:
 
 Prípadne sú pri nedostatočnej implementácií struhnuté body za OOP za nedostatočnú implementáciu.
 
-**Pri zadaní sa kontroluje originalita zadaní, a všetky zadania so zhodou vyššou ako 80% sú hodnotené 0 bodmi.**
+**Pri zadaní sa kontroluje originalita zadaní, a všetky zadania so zhodou vyššou ako 65% sú hodnotené 0 bodmi.**
 
 ## Odovzdávanie
 Zadanie si naklonujte z repozitára zadania výhradne pomocou poskytnutej linky cez GitHub Classroom (pokiaľ si vygenerujete vlastný repozitár pomocou tlačidla "Use this template" z template repozitára, my váš repozitár neuvidíme a nebudeme ho hodnotiť!). Svoje vypracovanie nahrajte do pre vás vytvoreného repozitára pre toto zadanie pomocou programu Git (git commit + git push).
@@ -134,7 +134,7 @@ Issues that resulted in a 0.5 - 1 point reduction last year:
 
 If the assignment lacks a substantial part of the specified functionality additional points are substracted.
 
-**The originality of the code is checks, all assignments with a more than 80% match are awarded with 0 points.**
+**The originality of the code is checks, all assignments with a more than 65% match are awarded with 0 points.**
 
 ## Handing in the assigment
 
@@ -142,7 +142,7 @@ Clone the assignment from the repository created from this template by the provi
 
 Make sure, that your repository was created under the **Interes-Group** group, otherwise we won't be able to access your repository, and the assignment will not be graded.
 
-You can push commits to the repository while you work - you don't have to push everything at once. Only the code in the _master_ branch will be graded. You have until **15.4.2022 23:00** to complete the assignment.
+You can push commits to the repository while you work - you don't have to push everything at once. Only the code in the _master_ branch will be graded. You have until **23.4.2023 23:00** to complete the assignment.
 
 Only edit files in the _src/main_ folder or its sub-folders. You mustn't change any other files in the repository (especially the _pom.xml_ file, and the github pipeline files).
 
