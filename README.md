@@ -18,7 +18,7 @@ Cieľom hry je prepojiť štart a ciel pomocou správneho otočenia trubiek. Ak 
 Hra má byť hrateľná pomocou myši, keď myšou prejdem ponad pole, dané pole sa musí zvýrazniť. Ak sa na danom poli nachádza trubka, pomocou kliknutia myši ju viem otočiť.
 V menu sa má nachádzať:
 * informácia o tom, v ktorom som leveli, a veľkosť plochy.
-* komponent pomocou ktorého je možné zmeniť veľkosť hracej plochy (iba na hodnoty 8 a vyššie). Konkrétny komponent si môžete zvoliť sami, napríklad jeden z: Slider, JTextField, JComboBox. Pri zmene velkosti vždy resetujem hru.
+* komponent pomocou ktorého je možné zmeniť veľkosť hracej plochy (iba na hodnoty 8 a vyššie). Konkrétny komponent si môžete zvoliť sami, napríklad jeden z: Slider, JTextField, JComboBox. Pri zmene veľkosti vždy resetujem hru.
 * tlačidlo, ktorým vieme hru zresetovať.
 * tlačidlo, ktorým vieme skontrolovať správnosť našej cesty.
 
