@@ -59,4 +59,8 @@ public class Tile extends JPanel {
             this.rotate();
         }
     }
+
+    public Direction getOtherDirection() {
+        return null;
+    }
 }

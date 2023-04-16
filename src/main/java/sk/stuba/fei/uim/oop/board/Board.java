@@ -14,12 +14,10 @@ public class Board extends JPanel {
     private Node start;
     private Node end;
     private List<Node> path;
-    private List<Direction> correctPath;
 
     public Board(int dimension) {
         this.random = new Random();
         this.path = new ArrayList<>();
-        this.correctPath = new ArrayList<>();
         this.initializeBoard(dimension);
         this.setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));
         this.setBackground(Color.CYAN);
@@ -55,11 +53,9 @@ public class Board extends JPanel {
 
             if (next == null && current.equals(this.end)) {
                 Direction direction = this.checkDirection(current, previous);
-                this.correctPath.add(0, direction);
                 this.board[current.getY()][current.getX()] = new StartEnd(direction, false);
             } else if (previous == null && current.equals(this.start)) {
                 Direction direction = this.checkDirection(current, next);
-                this.correctPath.add(0, direction);
                 this.board[current.getY()][current.getX()] = new StartEnd(direction, true);
             } else {
                 this.checkPipes(current, next, previous);
@@ -71,30 +67,10 @@ public class Board extends JPanel {
     private void checkPipes(Node current, Node next, Node previous) {
         Direction nextDirection = this.checkDirection(current, next);
         Direction prevDirection = this.checkDirection(current, previous);
-        if ((nextDirection.equals(Direction.UP) && prevDirection.equals(Direction.DOWN)) ||
-                (nextDirection.equals(Direction.DOWN) && prevDirection.equals(Direction.UP))) {
-            this.correctPath.add(0, Direction.UP);
+        if (this.oppositeDirections(nextDirection, prevDirection)) {
             this.board[current.getY()][current.getX()] = new StraightPipe(Direction.UP);
-        } else if ((nextDirection.equals(Direction.LEFT) && prevDirection.equals(Direction.RIGHT)) ||
-                (nextDirection.equals(Direction.RIGHT) && prevDirection.equals(Direction.LEFT))) {
-            this.correctPath.add(0, Direction.LEFT);
-            this.board[current.getY()][current.getX()] = new StraightPipe(Direction.LEFT);
-        } else if ((nextDirection.equals(Direction.LEFT) && prevDirection.equals(Direction.DOWN)) ||
-                (nextDirection.equals(Direction.DOWN) && prevDirection.equals(Direction.LEFT))) {
-            this.correctPath.add(0, Direction.LEFT);
-            this.board[current.getY()][current.getX()] = new BentPipe(Direction.LEFT);
-        } else if ((nextDirection.equals(Direction.UP) && prevDirection.equals(Direction.LEFT)) ||
-                (nextDirection.equals(Direction.LEFT) && prevDirection.equals(Direction.UP))) {
-            this.correctPath.add(0, Direction.UP);
+        } else {
             this.board[current.getY()][current.getX()] = new BentPipe(Direction.UP);
-        } else if ((nextDirection.equals(Direction.UP) && prevDirection.equals(Direction.RIGHT)) ||
-                (nextDirection.equals(Direction.RIGHT) && prevDirection.equals(Direction.UP))) {
-            this.correctPath.add(0, Direction.RIGHT);
-            this.board[current.getY()][current.getX()] = new BentPipe(Direction.RIGHT);
-        } else if ((nextDirection.equals(Direction.RIGHT) && prevDirection.equals(Direction.DOWN)) ||
-                (nextDirection.equals(Direction.DOWN) && prevDirection.equals(Direction.RIGHT))) {
-            this.correctPath.add(0, Direction.DOWN);
-            this.board[current.getY()][current.getX()] = new BentPipe(Direction.DOWN);
         }
     }
 
@@ -106,16 +82,16 @@ public class Board extends JPanel {
     }
 
     private Direction checkDirection(Node current, Node another) {
-        int checkNextX = current.getX() - another.getX();
-        int checkNextY = current.getY() - another.getY();
+        int checkNextX = another.getX() - current.getX();
+        int checkNextY = another.getY() - current.getY();
         if (checkNextX == 0 && checkNextY == 1) {
-            return Direction.UP;
-        } else if (checkNextX == 0 && checkNextY == -1){
             return Direction.DOWN;
+        } else if (checkNextX == 0 && checkNextY == -1){
+            return Direction.UP;
         } else if (checkNextX == -1 && checkNextY == 0){
-            return Direction.RIGHT;
-        } else {
             return Direction.LEFT;
+        } else {
+            return Direction.RIGHT;
         }
     }
 
@@ -171,27 +147,44 @@ public class Board extends JPanel {
     }
 
     public boolean checkCorectness() {
-        for (int i = this.path.size() - 1; i >= 0 ; i--) {
-            Node current = this.path.get(i);
-            Direction correct = this.correctPath.get(i);
-            Tile tile = this.board[current.getY()][current.getX()];
-            if (tile instanceof StraightPipe) {
-                if ((correct.equals(Direction.LEFT) || correct.equals(Direction.RIGHT)) && (tile.getDirection().equals(Direction.LEFT) || tile.getDirection().equals(Direction.RIGHT))) {
-                    tile.setWater(true);
-                } else if ((correct.equals(Direction.UP) || correct.equals(Direction.DOWN)) && (tile.getDirection().equals(Direction.UP) || tile.getDirection().equals(Direction.DOWN))) {
-                    tile.setWater(true);
-                } else {
-                    return false;
-                }
-            } else {
-                if (correct.equals(tile.getDirection())) {
-                    tile.setWater(true);
-                } else {
-                    return false;
-                }
+        Node current = this.start;
+        Direction currentDirection = this.board[current.getY()][current.getX()].getDirection();
+        while (true) {
+            int checkX = current.getX() + currentDirection.getX();
+            int checkY = current.getY() + currentDirection.getY();
+            if (checkX < 0 || checkY < 0 || checkX >= this.board.length || checkY >= this.board.length) {
+                return false;
             }
+            Node next = new Node(checkX, checkY);
+            Tile tile = this.board[next.getY()][next.getX()];
+            if (!(tile instanceof BentPipe) &&
+                    !(tile instanceof StartEnd) &&
+                    !(tile instanceof StraightPipe)) {
+                return false;
+            }
+            if (tile instanceof StartEnd) {
+                return this.oppositeDirections(currentDirection, tile.getDirection());
+            }
+            Direction direction1 = tile.getDirection();
+            Direction direction2 = tile.getOtherDirection();
+            if (this.oppositeDirections(currentDirection, direction1)) {
+                tile.setWater(true);
+                current = next;
+                currentDirection = direction2;
+                continue;
+            }
+            if (this.oppositeDirections(currentDirection, direction2)) {
+                tile.setWater(true);
+                current = next;
+                currentDirection = direction1;
+                continue;
+            }
+            return false;
         }
-        return true;
+    }
+
+    private boolean oppositeDirections(Direction direction1, Direction direction2) {
+        return direction1.getX() + direction2.getX() == 0 && direction1.getY() + direction2.getY() == 0;
     }
 
 }

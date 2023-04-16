@@ -15,14 +15,14 @@ import java.awt.event.MouseEvent;
 public class GameLogic extends UniversalAdapter {
 
     public static final int INITIAL_BOARD_SIZE = 8;
-    private JFrame mainGame;
+    private Game mainGame;
     private Board currentBoard;
     private int currentBoardSize;
     @Getter
     private JLabel infoLabel;
     private int levelCounter;
 
-    public GameLogic(JFrame mainGame) {
+    public GameLogic(Game mainGame) {
         this.mainGame = mainGame;
         this.currentBoardSize = INITIAL_BOARD_SIZE;
         this.initializeNewBoard(this.currentBoardSize);

@@ -52,4 +52,18 @@ public class BentPipe extends Tile {
             g.drawLine(0 , (int) (this.getHeight() * 0.7), (int) (this.getWidth() * 0.3), (int) (this.getHeight() * 0.7));
         }
     }
+
+    @Override
+    public Direction getOtherDirection() {
+        switch (this.direction) {
+            case LEFT:
+                return Direction.DOWN;
+            case UP:
+                return Direction.LEFT;
+            case DOWN:
+                return Direction.RIGHT;
+            default:
+                return Direction.UP;
+        }
+    }
 }

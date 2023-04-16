@@ -5,22 +5,22 @@ import sk.stuba.fei.uim.oop.controls.GameLogic;
 import javax.swing.*;
 import java.awt.*;
 
-public class Game {
+public class Game extends JFrame {
 
     public static final String RESTART = "RESTART";
     public static final String CHECK = "CHECK WIN";
 
-    public Game() {
-        JFrame frame = new JFrame("WaterPipes!");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(800,890);
-        frame.getContentPane().setBackground(Color.CYAN);
-        frame.setResizable(false);
-        frame.setFocusable(true);
-        frame.requestFocusInWindow();
+    public Game() throws HeadlessException {
+        super("WaterPipes!");
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setSize(800,890);
+        this.getContentPane().setBackground(Color.CYAN);
+        this.setResizable(false);
+        this.setFocusable(true);
+        this.requestFocusInWindow();
 
-        GameLogic logic = new GameLogic(frame);
-        frame.addKeyListener(logic);
+        GameLogic logic = new GameLogic(this);
+        this.addKeyListener(logic);
 
         JPanel sideMenu = new JPanel();
         sideMenu.setBackground(Color.YELLOW);
@@ -47,8 +47,8 @@ public class Game {
         sideMenu.add(slider);
         sideMenu.add(buttonCheck);
         sideMenu.add(buttonRestart);
-        frame.add(sideMenu, BorderLayout.PAGE_START);
+        this.add(sideMenu, BorderLayout.PAGE_START);
 
-        frame.setVisible(true);
+        this.setVisible(true);
     }
 }

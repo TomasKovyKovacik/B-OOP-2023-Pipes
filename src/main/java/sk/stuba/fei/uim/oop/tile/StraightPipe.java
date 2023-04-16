@@ -30,4 +30,17 @@ public class StraightPipe extends Tile {
         }
     }
 
+    @Override
+    public Direction getOtherDirection() {
+        switch (this.direction) {
+            case LEFT:
+                return Direction.RIGHT;
+            case UP:
+                return Direction.DOWN;
+            case DOWN:
+                return Direction.UP;
+            default:
+                return Direction.LEFT;
+        }
+    }
 }
