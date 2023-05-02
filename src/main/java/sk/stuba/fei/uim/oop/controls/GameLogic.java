@@ -103,15 +103,19 @@ public class GameLogic extends UniversalAdapter {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        System.out.println(e);
         switch (e.getKeyCode()) {
             case KeyEvent.VK_R:
                 this.gameRestart(true);
                 break;
             case KeyEvent.VK_ESCAPE:
                 this.mainGame.dispose();
+                System.exit(0);
+                break;
             case KeyEvent.VK_ENTER:
                 this.checkCorectness();
+                break;
         }
+        this.mainGame.revalidate();
+        this.mainGame.repaint();
     }
 }
